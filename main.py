@@ -14,11 +14,16 @@ from pydantic import BaseModel
 
 
 # Caminhos e configurações
+
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
-DATABASE_PATH = BASE_DIR / "estoque.db"
 
 load_dotenv(BASE_DIR / ".env")
+
+DATABASE_PATH = Path(
+    os.getenv("DATABASE_PATH", str(BASE_DIR / "estoque.db"))
+)
+
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GEMINI_MODEL = os.getenv(
