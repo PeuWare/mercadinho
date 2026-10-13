@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chat da Vendinha</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat {
+            width: 100%;
+            max-width: 720px;
+            height: 85vh;
+            min-height: 420px;
+            background: white;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+
+.brand-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, #194D34, #28784D);
+    color: white;
+}
+
+.brand-mark {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.13);
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.brand-copy {
+    min-width: 0;
+}
+
+.brand-copy .eyebrow {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    opacity: 0.82;
+}
+
+.brand-copy h1 {
+    margin: 0 0 5px;
+    font-size: 23px;
+}
+
+.brand-copy p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0.94;
+}
+
+@media (max-width: 480px) {
+    .brand-header {
+        padding: 16px;
+        gap: 11px;
+    }
+
+    .brand-mark {
+        width: 46px;
+        height: 46px;
+    }
+
+    .brand-copy h1 {
+        font-size: 21px;
+    }
+}
+
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .suggestion {
+            padding: 8px 11px;
+            border: 1px solid #d1d5db;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .suggestion:hover {
+            background: #f3f4f6;
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            line-height: 1.45;
+        }
+
+        .bot {
+            align-self: flex-start;
+            background: #f0f2f5;
+            color: #222;
+        }
+
+        .user {
+            align-self: flex-end;
+            background: #236b45;
+            color: white;
+        }
+
+        #chat-form {
+            display: flex;
+            gap: 8px;
+            padding: 14px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        #message-input {
+            flex: 1;
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        #send-button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #236b45;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+
+            .chat {
+                height: 100vh;
+                min-height: 0;
+                border-radius: 0;
+            }
+
+            .message {
+                max-width: 95%;
+            }
+            
+        }
+        
+/* Formatação especial da saudação inicial */
+.message.welcome-message {
+    white-space: normal;
+}
+
+.welcome-message strong {
+    display: block;
+    margin-bottom: 10px;
+    color: #236b45;
+}
+
+.welcome-message p {
+    margin: 0 0 10px;
+    line-height: 1.45;
+}
+
+.welcome-message p:last-child {
+    margin-bottom: 0;
+}
+
+    </style>
+</head>
+
+<body>
+    <main class="chat">
+
+<header class="brand-header">
+    <div class="brand-mark" aria-hidden="true">C</div>
+
+    <div class="brand-copy">
+        <span class="eyebrow">MERCADINHO DO CHICO</span>
+        <h1>Balcão do Chico</h1>
+        <p>O que tá precisando hoje? Eu confiro pra você.</p>
+    </div>
+</header>
+
+
+        <section class="suggestions" aria-label="Perguntas sugeridas">
+            <button class="suggestion" type="button"
+                    data-question="Tem arroz?">
+                Tem arroz?
+            </button>
+
+            <button class="suggestion" type="button"
+                    data-question="Quantos cafés tem?">
+                Quantos cafés?
+            </button>
+
+            <button class="suggestion" type="button"
+                    data-question="Quanto custa o feijão?">
+                Preço do feijão
+            </button>
+
+            <button class="suggestion" type="button"
+                    data-question="Qual é o horário da loja?">
+                Horário da loja
+            </button>
+        </section>
+
+        <section id="messages" aria-live="polite">
+
+
+<div class="message bot welcome-message">
+    <strong>Chico</strong>
+
+    <p>Opa! Sou o Chico, aqui do Mercadinho do Chico.</p>
+
+    <p>Tá procurando alguma coisa? Me pergunta que eu confiro o preço, vejo se ainda tem no estoque ou te passo nosso horário.</p>
+</div>
+
+
+        </section>
+
+        <form id="chat-form">
+            <input
+                id="message-input"
+                type="text"
+                placeholder="Digite sua pergunta..."
+                autocomplete="off"
+                required
+                aria-label="Sua pergunta"
+            >
+
+            <button id="send-button" type="submit">
+                Enviar
+            </button>
+        </form>
+    </main>
+
+    <script>
+        const form = document.getElementById("chat-form");
+        const input = document.getElementById("message-input");
+        const sendButton = document.getElementById("send-button");
+        const messages = document.getElementById("messages");
+
+        // Adiciona uma mensagem à tela.
+        function addMessage(text, author) {
+            const bubble = document.createElement("div");
+
+            bubble.classList.add("message", author);
+            bubble.textContent = text;
+
+            messages.appendChild(bubble);
+            messages.scrollTop = messages.scrollHeight;
+
+            return bubble;
+        }
+
+        // Envia a pergunta ao Python e mostra a resposta.
+        async function sendMessage(message) {
+            if (!message.trim()) {
+                return;
+            }
+
+            addMessage(message, "user");
+
+            input.value = "";
+            input.disabled = true;
+            sendButton.disabled = true;
+
+            const waitingMessage = addMessage(
+                "Consultando a IA e o estoque...",
+                "bot"
+            );
+
+            try {
+                const response = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.detail || "Não foi possível obter a resposta."
+                    );
+                }
+
+                waitingMessage.textContent = data.response;
+
+            } catch (error) {
+                waitingMessage.textContent =
+                    "Não consegui responder agora. " + error.message;
+
+            } finally {
+                input.disabled = false;
+                sendButton.disabled = false;
+                input.focus();
+                messages.scrollTop = messages.scrollHeight;
+            }
+        }
+
+        // Quando o usuário envia pelo formulário.
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const question = input.value.trim();
+
+            if (question) {
+                await sendMessage(question);
+            }
+        });
+
+        // Quando o usuário clica em uma pergunta sugerida.
+        document.querySelectorAll(".suggestion").forEach(function (button) {
+            button.addEventListener("click", function () {
+                sendMessage(button.dataset.question);
+            });
+        });
+    </script>
+</body>
+</html>
